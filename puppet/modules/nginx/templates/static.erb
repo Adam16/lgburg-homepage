@@ -1,0 +1,28 @@
+# Use this as CDN for modx resource images/
+server {
+    listen 80;
+    server_name static.lgburg.dev;
+    root <%= @document_root %>/html/assets/images;
+
+    if ($request_uri !~* "\.(jpe?g|gif|png|ico|js|css)$") {
+        rewrite ^(.*) http://lgburg.dev$1 permanent;
+        break;
+    }
+
+    location / {
+	    valid_referers none blocked lgburg.dev;
+
+        if ($invalid_referer) {
+            return 403;
+        }
+
+        expires max;
+        add_header Pragma public;
+        add_header Cache-Control "public, must-revalidate, proxy-revalidate";
+        access_log off;
+        log_not_found off;
+        fastcgi_hide_header Set-Cookie;
+        tcp_nodelay off;
+        break;
+    }
+}

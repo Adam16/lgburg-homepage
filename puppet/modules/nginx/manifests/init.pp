@@ -1,0 +1,57 @@
+class nginx {
+
+	package { [ 'apache2-mpm-prefork', 'apache2-utils', 'apache2.2-bin', 'apache2.2-common', 'libapache2-mod-php7.0' ]:
+		ensure => purged,
+	}
+
+	exec { 'nginxDir':
+		command => 'mkdir -p /etc/nginx/includes',
+		unless  => 'test -e /etc/nginx/includes/',
+	}
+
+	package { [ 'nginx', 'nginx-full', 'nginx-common']:
+		ensure  => latest,
+		require => Exec['nginxDir'],
+	}
+
+	file { '/etc/nginx/includes/modx.conf':
+		content => template('nginx/modx.erb'),
+		require => [Package['nginx']],
+		notify  => Service['nginx'],
+	}
+
+	file { '/etc/nginx/includes/tools.conf':
+		content => template('nginx/tools.erb'),
+		require => [Package['nginx']],
+		notify  => Service['nginx'],
+	}
+
+	file { '/etc/nginx/sites-available/default':
+		content => template('nginx/nginx.erb'),
+		require => Package['nginx'],
+		notify  => Service['nginx'],
+	}
+
+	file { '/etc/nginx/sites-enabled/static':
+		content => template('nginx/static.erb'),
+		require => Package['nginx'],
+		notify  => Service['nginx'],
+	}
+
+	file { '/etc/nginx/nginx.conf':
+		content => template('nginx/nginx.conf.erb'),
+		require => Package['nginx'],
+		notify  => Service['nginx'],
+	}
+
+	service { 'nginx':
+		ensure  => running,
+		require => Package['nginx'],
+	}
+
+	file { "${document_root}/html/public/index.php":
+		ensure  => absent,
+		require => Package['nginx'],
+	}
+
+}

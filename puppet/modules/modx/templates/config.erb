@@ -1,0 +1,18 @@
+<?php return [
+	'db' => [
+		'host' => '<%= @ip_address %>',
+		'port' => '3306',
+		'username' => 'modx',
+		'password' => 'password',
+		'dbname' => 'modx',
+		'socket' => '/var/run/mysqld/mysqld.sock',
+	],
+	'front' => [
+		'throwExceptions' => true,
+		'showException' => true,
+		'noErrorHandler' => false,
+	],
+	'phpsettings' => [
+		'display_errors' => 1,
+	],
+];

@@ -1,0 +1,46 @@
+## Author: Adam Balachowski
+## Modx nginx rules.
+## Designed to be included in any server {} block.
+## Please note that a upstream called "php-fpm" must be configured in the http context (nginx.conf).
+
+set $app_env 'development';
+
+# client Caching
+location ~* \.(?:ico|css|js|jpe?g|png|gif|svg|pdf|woff|otf)$ {
+    access_log        off;
+    log_not_found     off;
+    expires           7d;
+    gzip_vary on;
+    add_header Pragma public;
+    add_header Cache-Control "public";
+}
+
+# modx redirection
+location / {
+   if (!-e $request_filename) {
+       #rewrite ^/(.*)$ /index.php?q=$1 last;
+       rewrite ^/(en|fr|ru|hu)?/?(.*)$ /index.php?cultureKey=$1&q=$2 last;
+   }
+}
+
+location ~ \.php$ {
+    try_files $uri =404;
+
+    fastcgi_split_path_info ^(.+\.php)(.*)$;
+    fastcgi_index index.php;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_param PATH_INFO $fastcgi_script_name;
+    fastcgi_param SERVER_NAME $http_host;
+    fastcgi_param APP_ENV    $app_env if_not_empty;
+
+    include fastcgi_params;
+
+    fastcgi_buffers 8 128k;
+    fastcgi_buffer_size 256k;
+
+    client_max_body_size 24M;
+    client_body_buffer_size 128k;
+
+    # upstream "php-fpm" must be configured in http context
+    fastcgi_pass php-fpm;
+}

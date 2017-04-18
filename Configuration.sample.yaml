@@ -1,0 +1,30 @@
+---
+VirtualMachine:
+  #Internal IP e.g. "172.23.42.42"
+  ip: 172.23.42.42
+  # CPU cores
+  cpus: 2
+  # MB RAM
+  memory: 4092
+  # Start a with a window from the Virtualbox
+  gui: false
+  # Fully qualified domain name e.g. project.name.dev.domain.com
+  domain: modx.dev
+  # Alias domains separated by space
+  aliases:
+  #Apt proxy setting for a local mirror or  e.g. http://10.50.101.2:3142
+  aptProxy:
+  # To get a IP in your local network to make the VM accessible from other devices you need a network bridge
+  networkBridge: false
+  # Puppet debug and verbose for more information
+  puppetDebug: false
+  # Virtualbox group (works only without open Virtualbox manager)
+  group: /vagrant/modx
+
+Mount:
+  # Local folder
+  from: www
+
+Modx:
+  # Set download package
+  downloadLink: https://modx.com/download/direct?id=modx-2.5.4-pl.zip

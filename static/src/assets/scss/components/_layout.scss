@@ -1,0 +1,60 @@
+@charset "utf-8";
+
+body {
+  background-color: $primary-color;
+}
+
+.skip {
+  @extend .hidden;
+
+  &:focus {
+    position:static;
+    width:auto;
+    height:auto;
+  }
+}
+
+main {
+  background-color: $white;
+  padding-top: $global-padding*2;
+  padding-bottom: $global-padding*4;
+}
+
+#page-header {
+  color: $white;
+
+  a {
+    @extend a;
+    color: $medium-gray;
+
+    &:hover {
+      @extend a:hover;
+      color: $white;
+    }
+  }
+
+  label {
+    color: $white;
+  }
+}
+
+.button {
+  text-transform: uppercase;
+  letter-spacing: rem-calc(1);
+}
+
+#page-footer {
+  @extend #page-header;
+  padding-top: $global-padding*4;
+  padding-bottom: $global-padding;
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+.feature {
+  background-color: $light-gray;
+  padding-top: $global-padding*4;
+  padding-bottom: $global-padding*4;
+}
